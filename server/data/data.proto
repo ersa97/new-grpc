@@ -1,0 +1,19 @@
+syntax="proto3";
+
+option go_package = "github.com/ersa97/new-grpc/server/data";
+
+package data;
+
+message allRequest{
+    string message=1;
+    string data=2;
+}
+
+message allResponse{
+    string message =1;
+    string data =2;
+}
+
+service All{
+    rpc getAll (allRequest) returns (allResponse);
+}

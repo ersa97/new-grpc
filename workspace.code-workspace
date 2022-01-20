@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "..\\latihan-grpc\\server"
+		},
+		{
+			"path": "..\\latihan-grpc\\client"
+		}
+	],
+	"settings": {}
+}

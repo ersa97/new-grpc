@@ -159,7 +159,7 @@ func (s *UserService) UpdateUser(ctx context.Context, req *data.UpdateUserReques
 		Password: pass,
 	}
 
-	//change the existing user by id in the array of struct
+	//get the existing user by id and modify it by index in the array of struct
 	for i, v := range USERS {
 		if v.Id == newUser.Id {
 			USERS[i] = *newUser

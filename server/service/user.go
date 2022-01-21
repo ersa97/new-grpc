@@ -162,7 +162,7 @@ func (s *UserService) UpdateUser(ctx context.Context, req *data.UpdateUserReques
 	//change the existing user by id in the array of struct
 	for i, v := range USERS {
 		if v.Id == newUser.Id {
-			USERS = append(USERS[:i-1], *newUser)
+			USERS[i] = *newUser
 		}
 	}
 

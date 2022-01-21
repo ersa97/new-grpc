@@ -14,84 +14,228 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// AllClient is the client API for All service.
+// AuthenticationClient is the client API for Authentication service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type AllClient interface {
-	GetAll(ctx context.Context, in *AllRequest, opts ...grpc.CallOption) (*AllResponse, error)
+type AuthenticationClient interface {
+	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserResponse, error)
+	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	GetUsers(ctx context.Context, in *GetUsersRequest, opts ...grpc.CallOption) (*GetUsersResponse, error)
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
+	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 }
 
-type allClient struct {
+type authenticationClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewAllClient(cc grpc.ClientConnInterface) AllClient {
-	return &allClient{cc}
+func NewAuthenticationClient(cc grpc.ClientConnInterface) AuthenticationClient {
+	return &authenticationClient{cc}
 }
 
-func (c *allClient) GetAll(ctx context.Context, in *AllRequest, opts ...grpc.CallOption) (*AllResponse, error) {
-	out := new(AllResponse)
-	err := c.cc.Invoke(ctx, "/data.All/getAll", in, out, opts...)
+func (c *authenticationClient) AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserResponse, error) {
+	out := new(AddUserResponse)
+	err := c.cc.Invoke(ctx, "/data.Authentication/AddUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// AllServer is the server API for All service.
-// All implementations should embed UnimplementedAllServer
+func (c *authenticationClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+	out := new(LoginResponse)
+	err := c.cc.Invoke(ctx, "/data.Authentication/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationClient) GetUsers(ctx context.Context, in *GetUsersRequest, opts ...grpc.CallOption) (*GetUsersResponse, error) {
+	out := new(GetUsersResponse)
+	err := c.cc.Invoke(ctx, "/data.Authentication/GetUsers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error) {
+	out := new(UpdateUserResponse)
+	err := c.cc.Invoke(ctx, "/data.Authentication/UpdateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error) {
+	out := new(DeleteUserResponse)
+	err := c.cc.Invoke(ctx, "/data.Authentication/DeleteUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AuthenticationServer is the server API for Authentication service.
+// All implementations should embed UnimplementedAuthenticationServer
 // for forward compatibility
-type AllServer interface {
-	GetAll(context.Context, *AllRequest) (*AllResponse, error)
+type AuthenticationServer interface {
+	AddUser(context.Context, *AddUserRequest) (*AddUserResponse, error)
+	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	GetUsers(context.Context, *GetUsersRequest) (*GetUsersResponse, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
+	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 }
 
-// UnimplementedAllServer should be embedded to have forward compatible implementations.
-type UnimplementedAllServer struct {
+// UnimplementedAuthenticationServer should be embedded to have forward compatible implementations.
+type UnimplementedAuthenticationServer struct {
 }
 
-func (UnimplementedAllServer) GetAll(context.Context, *AllRequest) (*AllResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
+func (UnimplementedAuthenticationServer) AddUser(context.Context, *AddUserRequest) (*AddUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
+}
+func (UnimplementedAuthenticationServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedAuthenticationServer) GetUsers(context.Context, *GetUsersRequest) (*GetUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUsers not implemented")
+}
+func (UnimplementedAuthenticationServer) UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+}
+func (UnimplementedAuthenticationServer) DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
 
-// UnsafeAllServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to AllServer will
+// UnsafeAuthenticationServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AuthenticationServer will
 // result in compilation errors.
-type UnsafeAllServer interface {
-	mustEmbedUnimplementedAllServer()
+type UnsafeAuthenticationServer interface {
+	mustEmbedUnimplementedAuthenticationServer()
 }
 
-func RegisterAllServer(s grpc.ServiceRegistrar, srv AllServer) {
-	s.RegisterService(&All_ServiceDesc, srv)
+func RegisterAuthenticationServer(s grpc.ServiceRegistrar, srv AuthenticationServer) {
+	s.RegisterService(&Authentication_ServiceDesc, srv)
 }
 
-func _All_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AllRequest)
+func _Authentication_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AllServer).GetAll(ctx, in)
+		return srv.(AuthenticationServer).AddUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/data.All/getAll",
+		FullMethod: "/data.Authentication/AddUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AllServer).GetAll(ctx, req.(*AllRequest))
+		return srv.(AuthenticationServer).AddUser(ctx, req.(*AddUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// All_ServiceDesc is the grpc.ServiceDesc for All service.
+func _Authentication_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/data.Authentication/Login",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Authentication_GetUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServer).GetUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/data.Authentication/GetUsers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServer).GetUsers(ctx, req.(*GetUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Authentication_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServer).UpdateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/data.Authentication/UpdateUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServer).UpdateUser(ctx, req.(*UpdateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Authentication_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServer).DeleteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/data.Authentication/DeleteUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServer).DeleteUser(ctx, req.(*DeleteUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Authentication_ServiceDesc is the grpc.ServiceDesc for Authentication service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var All_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "data.All",
-	HandlerType: (*AllServer)(nil),
+var Authentication_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "data.Authentication",
+	HandlerType: (*AuthenticationServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "getAll",
-			Handler:    _All_GetAll_Handler,
+			MethodName: "AddUser",
+			Handler:    _Authentication_AddUser_Handler,
+		},
+		{
+			MethodName: "Login",
+			Handler:    _Authentication_Login_Handler,
+		},
+		{
+			MethodName: "GetUsers",
+			Handler:    _Authentication_GetUsers_Handler,
+		},
+		{
+			MethodName: "UpdateUser",
+			Handler:    _Authentication_UpdateUser_Handler,
+		},
+		{
+			MethodName: "DeleteUser",
+			Handler:    _Authentication_DeleteUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

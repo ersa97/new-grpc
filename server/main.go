@@ -16,10 +16,10 @@ func main() {
 		log.Fatal("make sure GRPC server is running")
 	}
 
-	s := service.Server{}
+	s := service.UserService{}
 
 	grpcServer := grpc.NewServer()
-	data.RegisterAllServer(grpcServer, &s)
+	data.RegisterAuthenticationServer(grpcServer, &s)
 
 	fmt.Println("GRPC Server running at http://localhost:8000")
 

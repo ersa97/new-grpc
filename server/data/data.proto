@@ -6,6 +6,7 @@ package data;
 
 service Authentication{
     rpc AddUser (AddUserRequest) returns (AddUserResponse);
+    rpc RegisterUser (RegisterRequest) returns (RegisterResponse);
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc GetUsers (GetUsersRequest) returns (GetUsersResponse);
     rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
@@ -27,6 +28,15 @@ message AddUserRequest{
 message AddUserResponse{
     string message=1;
     User user = 2;
+}
+
+message RegisterRequest{
+    string message=1;
+    User user=2;
+}
+
+message RegisterResponse{
+    string message=1;
 }
 
 message LoginRequest{

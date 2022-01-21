@@ -75,6 +75,30 @@ func (s *UserService) AddUser(ctx context.Context, req *data.AddUserRequest) (*d
 	}, nil
 }
 
+func (s *UserService) RegisterUser(ctx context.Context, req *data.RegisterRequest) (*data.RegisterResponse, error) {
+
+	id := ksuid.New().String()
+	pass, err := utils.Encryption(req.User.Password)
+
+	if err != nil {
+		return nil, errors.New("register failed")
+	}
+
+	newUser := User{
+		Id:       &id,
+		Name:     req.User.Name,
+		Email:    req.User.Email,
+		Password: pass,
+	}
+
+	USERS = append(USERS, newUser)
+
+	return &data.RegisterResponse{
+		Message: "Register Successful",
+	}, nil
+
+}
+
 func (s *UserService) Login(ctx context.Context, req *data.LoginRequest) (*data.LoginResponse, error) {
 	var user *data.User
 	/*comparing the email and the encrypted password,

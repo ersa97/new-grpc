@@ -214,7 +214,7 @@ func (s *UserService) UpdateUser(ctx context.Context, req *data.UpdateUserReques
 }
 
 func (s *UserService) DeleteUser(ctx context.Context, req *data.DeleteUserRequest) (*data.DeleteUserResponse, error) {
-	// get the user who is doing the delete action
+	// get the user who is doing the delete actions
 	userid, err := utils.Verify(req.GetAccessToken())
 
 	if err != nil {

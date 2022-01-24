@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
@@ -46,25 +47,24 @@ func Decryption(password string) ([]byte, error) {
 	return decryptedBytes, nil
 }
 
-func Compare(encrypted, password string) bool {
-
-	encryptedBytes := []byte(encrypted)
+func Compare(encrypted, password []byte) bool {
 
 	decryptedBytes, err := rsa.DecryptOAEP(
 		sha256.New(),
 		rand.Reader,
 		privateKey,
-		encryptedBytes,
+		encrypted,
 		nil)
 
 	if err != nil {
 		return false
 	}
 
-	decryptedStr := string(decryptedBytes)
+	res := bytes.Compare(decryptedBytes, password)
 
-	if decryptedStr != password {
+	if res == 0 {
+		return true
+	} else {
 		return false
 	}
-	return true
 }

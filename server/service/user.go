@@ -117,8 +117,10 @@ func (s *UserService) Login(ctx context.Context, req *data.LoginRequest) (*data.
 	var user *data.User
 	/*comparing the email and the encrypted password,
 	if both of them true then insert it to the local variable*/
+
+	println(req.Email)
 	for _, v := range log_database {
-		if v.Email == req.Email && utils.Compare(string(v.Password), req.Password) {
+		if v.Email == req.Email && utils.Compare(v.Password, req.Password) {
 			user = &data.User{
 				Id:       v.Id,
 				Name:     v.Name,
@@ -128,6 +130,7 @@ func (s *UserService) Login(ctx context.Context, req *data.LoginRequest) (*data.
 			break
 		}
 	}
+
 	//if user not found then maybe they input them wrong
 	if user == nil {
 		return nil, errors.New("username or password is incorrect")

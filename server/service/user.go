@@ -32,8 +32,6 @@ var log_database = []User{
 	},
 }
 
-var USERS = []User{}
-
 func (s *UserService) AddUser(ctx context.Context, req *data.AddUserRequest) (*data.AddUserResponse, error) {
 	//validate the user that use the add action
 	userid, err := utils.Verify(req.GetAccessToken())
@@ -45,7 +43,7 @@ func (s *UserService) AddUser(ctx context.Context, req *data.AddUserRequest) (*d
 
 	//move it to local variable
 	var user *data.User
-	for _, v := range USERS {
+	for _, v := range log_database {
 		if v.Id == userid {
 			user = &data.User{
 				Id:       v.Id,
@@ -75,7 +73,7 @@ func (s *UserService) AddUser(ctx context.Context, req *data.AddUserRequest) (*d
 	}
 
 	//add the data into the array of struct
-	USERS = append(USERS, newUser)
+	log_database = append(log_database, newUser)
 
 	return &data.AddUserResponse{
 		Message: "Add User Successful",
@@ -104,7 +102,7 @@ func (s *UserService) RegisterUser(ctx context.Context, req *data.RegisterReques
 		Password: pass,
 	}
 
-	USERS = append(USERS, newUser)
+	log_database = append(log_database, newUser)
 
 	return &data.RegisterResponse{
 		Message: "Register Successful",
@@ -116,7 +114,7 @@ func (s *UserService) Login(ctx context.Context, req *data.LoginRequest) (*data.
 	var user *data.User
 	/*comparing the email and the encrypted password,
 	if both of them true then insert it to the local variable*/
-	for _, v := range USERS {
+	for _, v := range log_database {
 		if v.Email == req.Email && utils.Compare(v.Password, req.Password) {
 			user = &data.User{
 				Id:       v.Id,
@@ -168,7 +166,7 @@ func (s *UserService) UpdateUser(ctx context.Context, req *data.UpdateUserReques
 	//move it to local variable
 	var user *data.User
 
-	for _, v := range USERS {
+	for _, v := range log_database {
 		if v.Id == userid {
 			user = &data.User{
 				Id:       v.Id,
@@ -197,9 +195,9 @@ func (s *UserService) UpdateUser(ctx context.Context, req *data.UpdateUserReques
 	}
 
 	//get the existing user by id and modify it by index in the array of struct
-	for i, v := range USERS {
+	for i, v := range log_database {
 		if v.Id == newUser.Id {
-			USERS[i] = *newUser
+			log_database[i] = *newUser
 		}
 	}
 
@@ -225,7 +223,7 @@ func (s *UserService) DeleteUser(ctx context.Context, req *data.DeleteUserReques
 
 	var user *data.User
 	//move it to a local variable
-	for _, v := range USERS {
+	for _, v := range log_database {
 		if userid == v.Id {
 			user = &data.User{
 				Id:       v.Id,
@@ -243,9 +241,9 @@ func (s *UserService) DeleteUser(ctx context.Context, req *data.DeleteUserReques
 	}
 
 	//delete the user by id from the array of struct
-	for i, v := range USERS {
+	for i, v := range log_database {
 		if v.Id == req.User.Id {
-			USERS = append(USERS[:i], USERS[i+1:]...)
+			log_database = append(log_database[:i], log_database[i+1:]...)
 			break
 		}
 	}
@@ -253,7 +251,7 @@ func (s *UserService) DeleteUser(ctx context.Context, req *data.DeleteUserReques
 	var users []*data.User
 
 	//get all existing user
-	for _, v := range USERS {
+	for _, v := range log_database {
 		users = append(users, &data.User{
 			Id:       v.Id,
 			Name:     v.Name,

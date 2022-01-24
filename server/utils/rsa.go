@@ -8,7 +8,7 @@ import (
 
 var privateKey, _ = rsa.GenerateKey(rand.Reader, 1024)
 
-func Encryption(password string) (string, error) {
+func Encryption(password string) ([]byte, error) {
 
 	publicKey := privateKey.PublicKey
 
@@ -20,15 +20,13 @@ func Encryption(password string) (string, error) {
 		nil)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	encryptionStr := string(encryptionBytes)
-
-	return encryptionStr, nil
+	return encryptionBytes, nil
 }
 
-func Decryption(password string) (string, error) {
+func Decryption(password string) ([]byte, error) {
 
 	encryptedBytes := []byte(password)
 
@@ -40,12 +38,12 @@ func Decryption(password string) (string, error) {
 		nil)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	decryptedStr := string(decryptedBytes)
+	// decryptedStr := string(decryptedBytes)
 
-	return decryptedStr, nil
+	return decryptedBytes, nil
 }
 
 func Compare(encrypted, password string) bool {

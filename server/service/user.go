@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/ersa97/new-grpc/server/data"
 	"github.com/ersa97/new-grpc/server/utils"
@@ -16,19 +17,19 @@ type User struct {
 	Id       *string
 	Name     string
 	Email    string
-	Password string
+	Password []byte
 }
 
 var log_database = []User{
 	{
 		Name:     "ersa",
 		Email:    "ersa1997@gmail.com",
-		Password: "1234567890",
+		Password: []byte("1234567890"),
 	},
 	{
 		Name:     "Adinda",
 		Email:    "ersa1997@gmail.com",
-		Password: "1234567890",
+		Password: []byte("1234567890"),
 	},
 }
 
@@ -49,7 +50,7 @@ func (s *UserService) AddUser(ctx context.Context, req *data.AddUserRequest) (*d
 				Id:       v.Id,
 				Name:     v.Name,
 				Email:    v.Email,
-				Password: v.Password,
+				Password: []byte(v.Password),
 			}
 			break
 		}
@@ -62,7 +63,7 @@ func (s *UserService) AddUser(ctx context.Context, req *data.AddUserRequest) (*d
 
 	//create random id and encrypted password to be stored
 	id := ksuid.New().String()
-	pass, _ := utils.Encryption(req.User.Password)
+	pass, _ := utils.Encryption(string(req.User.Password))
 
 	//move all of the data that will be added to a new variable
 	newUser := User{
@@ -89,7 +90,7 @@ func (s *UserService) AddUser(ctx context.Context, req *data.AddUserRequest) (*d
 func (s *UserService) RegisterUser(ctx context.Context, req *data.RegisterRequest) (*data.RegisterResponse, error) {
 
 	id := ksuid.New().String()
-	pass, err := utils.Encryption(req.User.Password)
+	pass, err := utils.Encryption(string(req.User.Password))
 
 	if err != nil {
 		return nil, errors.New("register failed")
@@ -104,6 +105,8 @@ func (s *UserService) RegisterUser(ctx context.Context, req *data.RegisterReques
 
 	log_database = append(log_database, newUser)
 
+	fmt.Println(id)
+
 	return &data.RegisterResponse{
 		Message: "Register Successful",
 	}, nil
@@ -115,7 +118,7 @@ func (s *UserService) Login(ctx context.Context, req *data.LoginRequest) (*data.
 	/*comparing the email and the encrypted password,
 	if both of them true then insert it to the local variable*/
 	for _, v := range log_database {
-		if v.Email == req.Email && utils.Compare(v.Password, req.Password) {
+		if v.Email == req.Email && utils.Compare(string(v.Password), req.Password) {
 			user = &data.User{
 				Id:       v.Id,
 				Name:     v.Name,
@@ -150,6 +153,7 @@ func (s *UserService) GetUsers(ctx context.Context, req *data.GetUsersRequest) (
 			Password: v.Password,
 		})
 	}
+	fmt.Println(users)
 	return &data.GetUsersResponse{
 		Message: "Get All Users",
 		User:    users,
@@ -184,7 +188,7 @@ func (s *UserService) UpdateUser(ctx context.Context, req *data.UpdateUserReques
 	}
 
 	//encrypt the password with RSA before stored
-	pass, _ := utils.Encryption(req.User.Password)
+	pass, _ := utils.Encryption(string(req.User.Password))
 
 	//storing updated data in local variable
 	newUser := &User{

@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/ersa97/new-grpc/server/data"
+	"github.com/ersa97/new-grpc/client/data"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -20,6 +20,7 @@ func getAll() {
 	defer cancel()
 
 	r1, err := grpcClient.GetUsers(ctx, &data.GetUsersRequest{})
+	fmt.Println(r1)
 	if err != nil {
 		log.Fatalf("get users %s", err)
 	}
@@ -38,7 +39,7 @@ func Register() {
 		User: &data.User{
 			Name:     "Mustika",
 			Email:    "mustikadk1999@gmail.com",
-			Password: "mustika",
+			Password: []byte("mustika"),
 		},
 	})
 	if err != nil {
@@ -46,6 +47,50 @@ func Register() {
 	}
 
 	fmt.Println(r1.Message)
+	getAll()
+}
+
+func Login() {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
+	defer cancel()
+
+	r1, err := grpcClient.Login(ctx, &data.LoginRequest{
+		Email:    "mustikadk1999@gmail.com",
+		Password: []byte("mustika"),
+	})
+	if err != nil {
+		log.Fatalf("login %s", err)
+	}
+	fmt.Println(r1.AccessToken)
+
+	var opt string
+	fmt.Println("Welcome mustikadk1999@gmail.com \nPlease pick a menu to start\n1. Add user Users\n2. Delete User\n3. Update")
+	fmt.Scanf("%s", &opt)
+	fmt.Println(opt)
+	if opt == "1" {
+		Add(r1.AccessToken)
+	}
+}
+
+func Add(token string) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
+	defer cancel()
+
+	r1, err := grpcClient.AddUser(ctx, &data.AddUserRequest{
+		AccessToken: token,
+		User: &data.User{
+			Name:     "Safrizal",
+			Email:    "safrizal99@gmail.com",
+			Password: []byte("safrizal99"),
+		},
+	})
+	if err != nil {
+		log.Fatalf("add user %s", err)
+	}
+
+	fmt.Println("Users : ")
+	fmt.Printf("ID\t: %v\nName\t: %v\nEmail\t: %v\nPassword: %v\n\n", r1.User.Id, r1.User.Name, r1.User.Email, r1.User.Password)
+
 }
 
 func main() {
@@ -60,7 +105,7 @@ func main() {
 	fmt.Println("CLient is Running")
 
 	var menu string
-	fmt.Println("Welcome to User Configuration \n please pick a menu to start\n1. get All Users\n2. Register")
+	fmt.Println("Welcome to User Configuration \n please pick a menu to start\n1. get All Users\n2. Register\n3. Login")
 	fmt.Scanf("%s", &menu)
 
 	switch menu {
@@ -68,6 +113,8 @@ func main() {
 		getAll()
 	case "2":
 		Register()
-		getAll()
+	case "3":
+		Login()
+
 	}
 }

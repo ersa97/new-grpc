@@ -19,6 +19,19 @@ type User struct {
 	Password string
 }
 
+var log_database = []User{
+	{
+		Name:     "ersa",
+		Email:    "ersa1997@gmail.com",
+		Password: "1234567890",
+	},
+	{
+		Name:     "Adinda",
+		Email:    "ersa1997@gmail.com",
+		Password: "1234567890",
+	},
+}
+
 var USERS = []User{}
 
 func (s *UserService) AddUser(ctx context.Context, req *data.AddUserRequest) (*data.AddUserResponse, error) {
@@ -131,7 +144,7 @@ func (s *UserService) Login(ctx context.Context, req *data.LoginRequest) (*data.
 func (s *UserService) GetUsers(ctx context.Context, req *data.GetUsersRequest) (*data.GetUsersResponse, error) {
 	//create a local array of struct to store all of the data
 	var users []*data.User
-	for _, v := range USERS {
+	for _, v := range log_database {
 		users = append(users, &data.User{
 			Id:       v.Id,
 			Name:     v.Name,

@@ -20,15 +20,22 @@ type User struct {
 	Password []byte
 }
 
+func genID() *string {
+	c := ksuid.New().String()
+	return &c
+}
+
 var log_database = []User{
 	{
+		Id:       genID(),
 		Name:     "ersa",
 		Email:    "ersa1997@gmail.com",
 		Password: []byte("1234567890"),
 	},
 	{
+		Id:       genID(),
 		Name:     "Adinda",
-		Email:    "ersa1997@gmail.com",
+		Email:    "adinda.hs@gmail.com",
 		Password: []byte("1234567890"),
 	},
 }
@@ -36,7 +43,7 @@ var log_database = []User{
 func (s *UserService) AddUser(ctx context.Context, req *data.AddUserRequest) (*data.AddUserResponse, error) {
 	//validate the user that use the add action
 	userid, err := utils.Verify(req.GetAccessToken())
-
+	fmt.Print(*userid)
 	//catch if there is a mistake in verifying the token
 	if err != nil {
 		return nil, errors.New("token is invalid")
@@ -45,7 +52,8 @@ func (s *UserService) AddUser(ctx context.Context, req *data.AddUserRequest) (*d
 	//move it to local variable
 	var user *data.User
 	for _, v := range log_database {
-		if v.Id == userid {
+		if *v.Id == *userid {
+			fmt.Print("berhasil hore")
 			user = &data.User{
 				Id:       v.Id,
 				Name:     v.Name,
@@ -105,8 +113,6 @@ func (s *UserService) RegisterUser(ctx context.Context, req *data.RegisterReques
 
 	log_database = append(log_database, newUser)
 
-	fmt.Println(id)
-
 	return &data.RegisterResponse{
 		Message: "Register Successful",
 	}, nil
@@ -118,7 +124,6 @@ func (s *UserService) Login(ctx context.Context, req *data.LoginRequest) (*data.
 	/*comparing the email and the encrypted password,
 	if both of them true then insert it to the local variable*/
 
-	println(req.Email)
 	for _, v := range log_database {
 		if v.Email == req.Email && utils.Compare(v.Password, req.Password) {
 			user = &data.User{
@@ -135,6 +140,8 @@ func (s *UserService) Login(ctx context.Context, req *data.LoginRequest) (*data.
 	if user == nil {
 		return nil, errors.New("username or password is incorrect")
 	}
+
+	fmt.Println(*user.Id)
 	//creating token for the user to use inside the app
 	token, err := utils.CreateToken(*user.Id)
 	if err != nil {
@@ -156,7 +163,6 @@ func (s *UserService) GetUsers(ctx context.Context, req *data.GetUsersRequest) (
 			Password: v.Password,
 		})
 	}
-	fmt.Println(users)
 	return &data.GetUsersResponse{
 		Message: "Get All Users",
 		User:    users,
@@ -174,7 +180,7 @@ func (s *UserService) UpdateUser(ctx context.Context, req *data.UpdateUserReques
 	var user *data.User
 
 	for _, v := range log_database {
-		if v.Id == userid {
+		if *v.Id == *userid {
 			user = &data.User{
 				Id:       v.Id,
 				Name:     v.Name,
@@ -203,7 +209,7 @@ func (s *UserService) UpdateUser(ctx context.Context, req *data.UpdateUserReques
 
 	//get the existing user by id and modify it by index in the array of struct
 	for i, v := range log_database {
-		if v.Id == newUser.Id {
+		if v.Email == newUser.Email {
 			log_database[i] = *newUser
 		}
 	}
@@ -231,7 +237,7 @@ func (s *UserService) DeleteUser(ctx context.Context, req *data.DeleteUserReques
 	var user *data.User
 	//move it to a local variable
 	for _, v := range log_database {
-		if userid == v.Id {
+		if *userid == *v.Id {
 			user = &data.User{
 				Id:       v.Id,
 				Name:     v.Name,
@@ -247,9 +253,9 @@ func (s *UserService) DeleteUser(ctx context.Context, req *data.DeleteUserReques
 		return nil, errors.New("user is unauthorized to delete another user")
 	}
 
-	//delete the user by id from the array of struct
+	//delete the user by email from the array of struct
 	for i, v := range log_database {
-		if v.Id == req.User.Id {
+		if v.Email == req.User.Email {
 			log_database = append(log_database[:i], log_database[i+1:]...)
 			break
 		}
